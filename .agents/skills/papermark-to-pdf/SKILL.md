@@ -6,7 +6,7 @@ user-invocable: true
 argument-hint: <papermark-url> [output.pdf]
 metadata:
   author: yaniv-golan
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 # Papermark to PDF
@@ -31,7 +31,7 @@ https://www.papermark.com/view/<document-id>
 https://www.papermark.io/view/<document-id>
 ```
 
-For the output path: use the second argument if provided, otherwise default to `./deck.pdf` in the current working directory. If the user specified a destination directory or filename, use that.
+For the output path: use the second argument if provided. If omitted, the script automatically derives a filename from the deck's page title (e.g. `Acme_Q3_Pitch.pdf`). If no title is available, it falls back to `deck.pdf`. Always tell the user the final output path once the script prints it.
 
 ### Step 2: Ensure dependencies are installed
 
@@ -48,17 +48,22 @@ Playwright + Chromium is ~110 MB. The install takes about 30 seconds. If already
 ```bash
 python "<skill-dir>/scripts/papermark_to_pdf.py" \
   "<papermark-url>" \
-  "<output-path>.pdf"
+  ["<output-path>.pdf"] \
+  [--debug]
 ```
 
-The script handles everything: opening the page, intercepting signed CloudFront image responses, navigating through all slides via keyboard (ArrowRight) with button-click fallback, and compiling images into a landscape PDF. It prints progress as it goes and exits 0 on success.
+Both `output.pdf` and `--debug` are optional. The script handles everything: opening the page, intercepting signed CloudFront image responses, navigating through all slides via keyboard (ArrowRight) with button-click fallback, and compiling images into a landscape PDF. It prints per-page capture progress and exits 0 on success.
+
+`--debug` logs every CloudFront URL intercepted, not just page images. Use it when diagnosing 0-image captures or unexpected URL patterns.
 
 ### Step 4: Report the result
 
-Tell the user the file path, page count, and file size from the script's output:
+Tell the user the file path, page count, and file size from the script's final output:
 ```
 PDF saved: /path/to/deck.pdf  (N pages, X.X MB)
 ```
+
+The script also prints a verification line confirming whether the captured page count matches the deck's reported slide count. Flag any mismatch to the user.
 
 ## Gotchas
 
@@ -85,6 +90,6 @@ These are hard-won lessons from building this skill. Each one is a dead end that
 ## Troubleshooting
 
 - **Timeout during navigation**: Papermark may be slow or the URL may require authentication. Check that the link is publicly accessible (no email gate or password).
-- **0 images captured**: The page structure may have changed. Check if `img[alt^="Page"]` still matches slide images, or if CloudFront URLs still contain `/page-`. Run with `--debug` removed to see raw output.
+- **0 images captured**: The page structure may have changed. Check if `img[alt^="Page"]` still matches slide images, or if CloudFront URLs still contain `/page-`. Run with `--debug` to print every CloudFront URL intercepted and confirm the expected pattern.
 - **Partial capture (fewer pages than expected)**: The script waits up to 2s per slide. For very slow connections, you can increase the `sleep` values in the script.
 - **Playwright install fails**: Try `playwright install --with-deps chromium` to also install system dependencies.

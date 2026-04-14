@@ -3,7 +3,9 @@
 Convert a Papermark shared deck URL to a PDF file.
 
 Usage:
-    python papermark_to_pdf.py <papermark-url> <output.pdf>
+    python papermark_to_pdf.py <papermark-url> [output.pdf] [--debug]
+
+If output.pdf is omitted, the filename is derived from the deck's page title.
 
 How it works:
     1. Opens the Papermark viewer in a headless Chromium browser
@@ -21,6 +23,9 @@ interception captures the actual binary data as the browser loads each image.
 Navigation uses ArrowRight keyboard input (more reliable than positional
 button detection, which breaks on viewport changes). Button-click is kept
 as a fallback.
+
+--debug prints every CloudFront URL intercepted (not just page images),
+useful when diagnosing 0-image captures or unexpected URL patterns.
 """
 
 import asyncio
@@ -38,6 +43,18 @@ PAPERMARK_DOMAINS = ("papermark.com", "papermark.io")
 
 def is_papermark_url(url: str) -> bool:
     return any(domain in url for domain in PAPERMARK_DOMAINS)
+
+
+def title_to_filename(title: str) -> str:
+    """Derive a safe PDF filename from the page title."""
+    # Strip common Papermark suffixes
+    for suffix in (" | Papermark", " - Papermark", "| Papermark", "- Papermark"):
+        if suffix in title:
+            title = title[: title.index(suffix)].strip()
+    # Keep alphanumerics, spaces, hyphens; collapse the rest to underscores
+    safe = re.sub(r"[^\w\s-]", "", title).strip()
+    safe = re.sub(r"[\s-]+", "_", safe)
+    return (safe[:60] or "deck") + ".pdf"
 
 
 async def try_navigate_next(page) -> bool:
@@ -82,11 +99,14 @@ async def try_click_next_button(page) -> bool:
     return False
 
 
-async def convert_papermark_to_pdf(url: str, output_path: str) -> None:
+async def convert_papermark_to_pdf(
+    url: str, output_path: str | None, debug: bool = False
+) -> None:
     """Download all slides from a Papermark URL and save as PDF."""
 
     with tempfile.TemporaryDirectory() as tmpdir:
         saved_images: dict[int, str] = {}
+        total_slides = [0]  # mutable list so handle_response closure can read updates
 
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=True)
@@ -95,7 +115,11 @@ async def convert_papermark_to_pdf(url: str, output_path: str) -> None:
             # Intercept CloudFront image responses and save them to disk
             async def handle_response(response):
                 resp_url = response.url
-                if "cloudfront.net" not in resp_url or "/page-" not in resp_url:
+                if "cloudfront.net" not in resp_url:
+                    return
+                if debug:
+                    print(f"  [debug] CloudFront: {resp_url}")
+                if "/page-" not in resp_url:
                     return
                 try:
                     body = await response.body()
@@ -107,7 +131,13 @@ async def convert_papermark_to_pdf(url: str, output_path: str) -> None:
                         with open(filepath, "wb") as f:
                             f.write(body)
                         saved_images[num] = filepath
-                        print(f"  Captured page {num} ({len(body):,} bytes)")
+                        total_str = (
+                            f"/{total_slides[0]}" if total_slides[0] else ""
+                        )
+                        print(
+                            f"  Captured page {num}{total_str}"
+                            f" ({len(body):,} bytes)"
+                        )
                 except Exception as e:
                     print(f"  Warning: failed to capture a response: {e}")
 
@@ -118,10 +148,19 @@ async def convert_papermark_to_pdf(url: str, output_path: str) -> None:
             await page.goto(url, wait_until="networkidle", timeout=60000)
             await asyncio.sleep(2)
 
+            # Derive output path from page title if not provided
+            if output_path is None:
+                title = await page.title()
+                filename = title_to_filename(title) if title else "deck.pdf"
+                output_path = filename
+                print(f"Output: {output_path!r}  (from page title: {title!r})")
+
             # Count total slide images in the DOM
             total_imgs = await page.eval_on_selector_all(
                 'img[alt^="Page"]', "imgs => imgs.length"
             )
+            total_slides[0] = total_imgs  # make available to handle_response
+
             if total_imgs == 0:
                 print(
                     "Warning: found 0 slide images in DOM. "
@@ -151,13 +190,7 @@ async def convert_papermark_to_pdf(url: str, output_path: str) -> None:
                 await asyncio.sleep(0.8)
 
                 current_captured = len(saved_images)
-                pct = (
-                    f" ({current_captured}/{total_imgs})"
-                    if total_imgs
-                    else f" ({current_captured} captured)"
-                )
                 if current_captured > prev_captured:
-                    print(f"  Progress{pct}")
                     stall_count = 0
                 else:
                     stall_count += 1
@@ -210,19 +243,38 @@ async def convert_papermark_to_pdf(url: str, output_path: str) -> None:
         print(f"  Pages: {len(pages)}")
         print(f"  Size:  {size / 1024 / 1024:.1f} MB")
 
+        # Verification
+        if total_imgs and len(pages) != total_imgs:
+            print(
+                f"  Warning: captured {len(pages)} pages but deck reported"
+                f" {total_imgs} slides — some pages may be missing"
+            )
+        elif total_imgs:
+            print(f"  Verified: {len(pages)} pages match deck slide count")
+
+        if size < 1024:
+            print(
+                f"  Warning: PDF is unusually small ({size} bytes)"
+                " — may be empty or corrupt"
+            )
+
 
 def main():
-    if len(sys.argv) != 3:
-        print(f"Usage: {sys.argv[0]} <papermark-url> <output.pdf>")
+    positional = [a for a in sys.argv[1:] if not a.startswith("--")]
+    flags = {a for a in sys.argv[1:] if a.startswith("--")}
+    debug = "--debug" in flags
+
+    if len(positional) < 1 or len(positional) > 2:
+        print(f"Usage: {sys.argv[0]} <papermark-url> [output.pdf] [--debug]")
         sys.exit(1)
 
-    url = sys.argv[1]
-    output_path = sys.argv[2]
+    url = positional[0]
+    output_path = positional[1] if len(positional) == 2 else None
 
     if not is_papermark_url(url):
         print(f"Warning: URL doesn't look like a Papermark view link: {url}")
 
-    asyncio.run(convert_papermark_to_pdf(url, output_path))
+    asyncio.run(convert_papermark_to_pdf(url, output_path, debug=debug))
 
 
 if __name__ == "__main__":
