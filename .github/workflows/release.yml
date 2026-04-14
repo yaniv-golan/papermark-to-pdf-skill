@@ -12,7 +12,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -40,4 +40,4 @@ jobs:
         with:
           body_path: release-notes.md
           files: |
-            dist/papermark-to-pdf-skill.zip
+            dist/papermark-to-pdf.zip
