@@ -1,0 +1,25 @@
+{
+  "name": "papermark-to-pdf-marketplace",
+  "owner": {
+    "name": "lool-ventures",
+    "email": "yaniv@golan.name"
+  },
+  "metadata": {
+    "description": "Converts Papermark shared deck links into downloadable PDF files. Handles lazy-loaded slides by intercepting CloudFront image responses via a headless browser.",
+    "version": "1.1.0",
+    "pluginRoot": "./papermark-to-pdf"
+  },
+  "plugins": [
+    {
+      "name": "papermark-to-pdf",
+      "source": "./papermark-to-pdf",
+      "description": "Converts Papermark shared deck links into downloadable PDF files. Handles lazy-loaded slides by intercepting CloudFront image responses via a headless browser.",
+      "author": {
+        "name": "lool-ventures",
+        "email": "yaniv@golan.name"
+      },
+      "category": "workflow-automation",
+      "tags": ["papermark", "pdf", "deck", "presentation", "playwright", "cloudfront", "download"]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "papermark-to-pdf",
+  "displayName": "Papermark to PDF",
+  "version": "1.1.0",
+  "description": "Converts Papermark shared deck links into downloadable PDF files. Handles lazy-loaded slides by intercepting CloudFront image responses via a headless browser.",
+  "author": {
+    "name": "lool-ventures",
+    "email": "yaniv@golan.name"
+  },
+  "license": "MIT",
+  "keywords": ["papermark", "pdf", "deck", "presentation", "playwright", "cloudfront", "download"],
+  "skills": "./papermark-to-pdf/skills"
+}
