@@ -6,7 +6,7 @@ user-invocable: true
 argument-hint: <papermark-url> [output.pdf]
 metadata:
   author: yaniv-golan
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 # Papermark to PDF
@@ -37,11 +37,16 @@ For the output path: use the second argument if provided. If omitted, the script
 
 Run this once per session if needed:
 ```bash
-pip install playwright Pillow --break-system-packages -q 2>&1 | tail -1
-playwright install chromium 2>&1 | tail -1
+# Install Python packages only if missing
+python -c "import playwright; from PIL import Image" 2>/dev/null \
+  || pip install playwright Pillow --break-system-packages -q
+
+# Install Playwright's Chromium unless a system Chromium is already configured
+[ -n "$PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH" ] \
+  || playwright install chromium 2>&1 | tail -1
 ```
 
-Playwright + Chromium is ~110 MB. The install takes about 30 seconds. If already installed, these commands return instantly.
+Playwright + Chromium is ~110 MB on first install. If packages and browser are already present these commands return instantly. In container environments where Chromium is pre-installed, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to its path — the script reads this variable and passes it to `launch()`, and the install step skips the download entirely.
 
 ### Step 3: Run the conversion script
 

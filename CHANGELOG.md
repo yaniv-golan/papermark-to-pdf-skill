@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-04-14
+
+### Added
+- `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` environment variable support: when set, the script passes the path directly to `playwright.chromium.launch(executable_path=...)`, allowing container environments with a pre-installed system Chromium to skip the ~110 MB browser download entirely. Playwright does not read this variable automatically — the script now does explicitly.
+
+### Changed
+- Step 2 in SKILL.md now guards both installs: skips `pip install` if packages are already importable, and skips `playwright install chromium` if `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` is set. Bare machines with nothing pre-installed behave identically to before.
+
 ## [1.2.0] - 2026-04-14
 
 ### Added

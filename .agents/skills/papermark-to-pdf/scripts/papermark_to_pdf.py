@@ -109,7 +109,13 @@ async def convert_papermark_to_pdf(
         total_slides = [0]  # mutable list so handle_response closure can read updates
 
         async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=True)
+            # Allow container environments to provide a system Chromium by setting
+            # PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH. Playwright does not read this
+            # variable automatically — we pass it explicitly to launch().
+            executable_path = os.environ.get("PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH") or None
+            if executable_path:
+                print(f"Using system Chromium: {executable_path}")
+            browser = await p.chromium.launch(headless=True, executable_path=executable_path)
             page = await browser.new_page(viewport={"width": 1920, "height": 1080})
 
             # Intercept CloudFront image responses and save them to disk
