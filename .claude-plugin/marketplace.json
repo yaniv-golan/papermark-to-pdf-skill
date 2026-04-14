@@ -1,7 +1,7 @@
 {
   "name": "papermark-to-pdf-marketplace",
   "owner": {
-    "name": "lool-ventures",
+    "name": "yaniv-golan",
     "email": "yaniv@golan.name"
   },
   "metadata": {
@@ -15,7 +15,7 @@
       "source": "./papermark-to-pdf",
       "description": "Converts Papermark shared deck links into downloadable PDF files. Handles lazy-loaded slides by intercepting CloudFront image responses via a headless browser.",
       "author": {
-        "name": "lool-ventures",
+        "name": "yaniv-golan",
         "email": "yaniv@golan.name"
       },
       "category": "workflow-automation",

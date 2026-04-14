@@ -1,6 +1,6 @@
 # Papermark to PDF
 
-[![Install in Claude Desktop](https://img.shields.io/badge/Install_in_Claude_Desktop-D97757?style=for-the-badge&logo=claude&logoColor=white)](https://lool-ventures.github.io/papermark-to-pdf-skill/static/install-claude-desktop.html)
+[![Install in Claude Desktop](https://img.shields.io/badge/Install_in_Claude_Desktop-D97757?style=for-the-badge&logo=claude&logoColor=white)](https://yaniv-golan.github.io/papermark-to-pdf-skill/static/install-claude-desktop.html)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Agent Skills Compatible](https://img.shields.io/badge/Agent_Skills-compatible-4A90D9)](https://agentskills.io)
@@ -30,7 +30,7 @@ Papermark renders each slide as a per-session signed CloudFront image. You can't
 
 ### Claude Desktop
 
-[![Install in Claude Desktop](https://img.shields.io/badge/Install_in_Claude_Desktop-D97757?style=for-the-badge&logo=claude&logoColor=white)](https://lool-ventures.github.io/papermark-to-pdf-skill/static/install-claude-desktop.html)
+[![Install in Claude Desktop](https://img.shields.io/badge/Install_in_Claude_Desktop-D97757?style=for-the-badge&logo=claude&logoColor=white)](https://yaniv-golan.github.io/papermark-to-pdf-skill/static/install-claude-desktop.html)
 
 *— or install manually —*
 
@@ -38,19 +38,19 @@ Papermark renders each slide as a per-session signed CloudFront image. You can't
 2. Click **Browse Plugins**
 3. Go to the **Personal** tab and click **+**
 4. Choose **Add marketplace**
-5. Type `lool-ventures/papermark-to-pdf-skill` and click **Sync**
+5. Type `yaniv-golan/papermark-to-pdf-skill` and click **Sync**
 
 ### Claude Code (CLI)
 
 ```bash
-claude plugin marketplace add https://github.com/lool-ventures/papermark-to-pdf-skill
+claude plugin marketplace add https://github.com/yaniv-golan/papermark-to-pdf-skill
 claude plugin install papermark-to-pdf@papermark-to-pdf-marketplace
 ```
 
 Or from within a Claude Code session:
 
 ```
-/plugin marketplace add lool-ventures/papermark-to-pdf-skill
+/plugin marketplace add yaniv-golan/papermark-to-pdf-skill
 /plugin install papermark-to-pdf@papermark-to-pdf-marketplace
 ```
 
@@ -59,24 +59,24 @@ Or from within a Claude Code session:
 Works with Claude Code, Cursor, Copilot, Windsurf, and [40+ other agents](https://github.com/vercel-labs/skills):
 
 ```bash
-npx skills add lool-ventures/papermark-to-pdf-skill
+npx skills add yaniv-golan/papermark-to-pdf-skill
 ```
 
 ### Cursor
 
 1. Open **Cursor Settings**
-2. Paste `https://github.com/lool-ventures/papermark-to-pdf-skill` into the **Search or Paste Link** box
+2. Paste `https://github.com/yaniv-golan/papermark-to-pdf-skill` into the **Search or Paste Link** box
 
 ### Claude.ai (Web)
 
 > **Warning:** This skill requires Playwright and a headless Chromium browser, which are not available in Claude.ai's web sandbox. Use Claude Desktop or Claude Code instead.
 
-1. Download [`papermark-to-pdf.zip`](https://github.com/lool-ventures/papermark-to-pdf-skill/releases/latest/download/papermark-to-pdf.zip)
+1. Download [`papermark-to-pdf.zip`](https://github.com/yaniv-golan/papermark-to-pdf-skill/releases/latest/download/papermark-to-pdf.zip)
 2. Click **Customize** in the sidebar → **Skills** → **+** → **Upload a skill**
 
 ### Manus
 
-1. Download [`papermark-to-pdf.zip`](https://github.com/lool-ventures/papermark-to-pdf-skill/releases/latest/download/papermark-to-pdf.zip)
+1. Download [`papermark-to-pdf.zip`](https://github.com/yaniv-golan/papermark-to-pdf-skill/releases/latest/download/papermark-to-pdf.zip)
 2. Go to **Settings** → **Skills** → **+ Add** → **Upload**
 3. Upload the zip
 
@@ -88,17 +88,17 @@ npx skills add lool-ventures/papermark-to-pdf-skill
 ### Codex CLI
 
 ```
-$skill-installer https://github.com/lool-ventures/papermark-to-pdf-skill
+$skill-installer https://github.com/yaniv-golan/papermark-to-pdf-skill
 ```
 
 Or install manually:
 
-1. Download [`papermark-to-pdf.zip`](https://github.com/lool-ventures/papermark-to-pdf-skill/releases/latest/download/papermark-to-pdf.zip)
+1. Download [`papermark-to-pdf.zip`](https://github.com/yaniv-golan/papermark-to-pdf-skill/releases/latest/download/papermark-to-pdf.zip)
 2. Extract the `papermark-to-pdf/` folder to `~/.codex/skills/`
 
 ### Other Tools (Windsurf, etc.)
 
-Download [`papermark-to-pdf.zip`](https://github.com/lool-ventures/papermark-to-pdf-skill/releases/latest/download/papermark-to-pdf.zip) and extract the `papermark-to-pdf/` folder to:
+Download [`papermark-to-pdf.zip`](https://github.com/yaniv-golan/papermark-to-pdf-skill/releases/latest/download/papermark-to-pdf.zip) and extract the `papermark-to-pdf/` folder to:
 
 - **Project-level**: `.agents/skills/` in your project root
 - **User-level**: `~/.agents/skills/`

@@ -5,7 +5,7 @@ description: >-
 user-invocable: true
 argument-hint: <papermark-url> [output.pdf]
 metadata:
-  author: lool-ventures
+  author: yaniv-golan
   version: 1.1.0
 ---
 
