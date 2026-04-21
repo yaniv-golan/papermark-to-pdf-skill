@@ -1,12 +1,12 @@
 ---
 name: papermark-to-pdf
 description: >-
-  Converts Papermark shared deck links into downloadable PDF files. Use when the user shares a papermark.com or papermark.io URL and wants it as a PDF, asks to "download this deck", "save this Papermark link as PDF", "convert this deck to PDF", "get me a PDF of this presentation", or pastes a Papermark view link and says "PDF", "save", "download", or "export". Works with any public Papermark view link (papermark.com/view/ or papermark.io/view/) regardless of page count. Handles lazy-loaded slides by intercepting CloudFront image responses via a headless browser — no manual steps required.
+  Download a Papermark deck (papermark.com/view/... or papermark.io/view/...) as a PDF. Use when the user pastes a Papermark view link and wants it saved, downloaded, archived, exported, or converted to a PDF. Slides are lazy-loaded CloudFront images — curl/wget/HTML scraping won't work, so this skill drives a headless browser. Not for DocSend, pptx, existing PDFs, or uploading to Papermark.
 user-invocable: true
 argument-hint: <papermark-url> [output.pdf]
 metadata:
   author: yaniv-golan
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 # Papermark to PDF

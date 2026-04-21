@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-04-21
+
+### Changed
+- Tightened the skill description from 595 to 394 chars (-34%). Redundant slash-command reference and duplicate trigger phrasing removed; core routing signal (Papermark URL + PDF intent, anti-curl guidance, negative scope) preserved. Optimized via `skill-creator-plus` with a 20-query trigger eval set; triggering accuracy unchanged across variants.
+
 ## [1.3.0] - 2026-04-14
 
 ### Added
